@@ -6,14 +6,38 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pizzas</title>
+    <th:block th:replace="/fragments/resources :: head"></th:block>
 </head>
 <body>
+<nav th:replace="/fragments/nav :: nav"></nav>
 
-<h1>All Pizzas</h1>
+<div class="container px-5">
+    <h1 class="text-center my-5">All pizzas</h1>
 
-<ul th:if="${list}">
-    <li th:each="pizza: ${list}" th:text="${pizza.name}"></li>
-</ul>
+    <table th:if="${list}" class="table text-center">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Price</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        <tr th:each="pizza: ${list}">
+            <th th:text="${pizza.id}"></th>
+            <td th:text="${pizza.name}" th:href="@{|/pizzas/${pizza.id}|}"></td>
+            <td th:text="${pizza.description}"></td>
+            <td th:text="${pizza.price}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${list.size} == 0">
+        <h1>Not pizzas present</h1>
+    </div>
+
+</div>
 
 </body>
 </html>
