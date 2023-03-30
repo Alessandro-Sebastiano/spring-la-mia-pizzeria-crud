@@ -10,8 +10,20 @@
 </head>
 <body>
 <nav th:replace="/fragments/nav :: nav"></nav>
+<div>
+    <a th:href="@{/pizzas}" class="text-decoration-none m-4 d-inline-block"><i
+            class="fa-solid fa-arrow-left"></i> - go to all pizzas</a>
+</div>
 <div class="container">
-    <h1 th:text="${pizza.name}"></h1>
+    <div class="card w-50 m-auto">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4" th:text="${pizza.name}"></h3>
+            <div class="d-flex justify-content-between">
+                <p class="card-text" th:text="${pizza.description}"></p>
+                <a href="#" class="btn btn-primary px-4" th:text=" '$' + ${pizza.price}">Button</a>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
