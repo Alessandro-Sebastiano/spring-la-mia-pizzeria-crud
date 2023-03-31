@@ -1,6 +1,9 @@
 package org.lessons.java.springlamiapizzeriacrud.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name = "pizzas")
@@ -10,9 +13,26 @@ public class Pizza {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotEmpty
+    @Column(nullable = false)
     private String name;
     private String description;
+
+    @PositiveOrZero
+    @NotNull
+    @Column(nullable = false)
     private Integer price;
+
+
+    public Pizza() {
+        super();
+    }
+
+    public Pizza(String name, String description, Integer price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
 
     public Integer getId() {
         return id;
