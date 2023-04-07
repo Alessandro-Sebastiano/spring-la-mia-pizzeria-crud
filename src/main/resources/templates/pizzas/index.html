@@ -29,12 +29,26 @@
             <td><a th:text="${pizza.name}" th:href="@{/pizzas/{id}(id=${pizza.id})}"></a></td>
             <td th:text="${pizza.description}"></td>
             <td th:text="${pizza.price}"></td>
+            <td>
+                <a class="text-decoration-none text-white" th:href="@{/pizzas/edit/{id}(id=${pizza.id})}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                </a>
+            </td>
+            <td>
+                <form id="delete-form" method="post" th:action="@{/pizzas/delete/{id}(id=${pizza.id})}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa-sharp fa-solid fa-trash"></i>
+                    </button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
 
     <div th:if="${list.size} == 0">
-        <h1>Not pizzas present</h1>
+        <h1 class="text-center">No pizzas present</h1>
     </div>
 
     <div class="text-center my-5">
