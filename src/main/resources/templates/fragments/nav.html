@@ -1,10 +1,7 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <th:block th:replace="/fragments/resources :: head"></th:block>
-</head>
 <body>
-<nav th:fragment="nav" class="navbar navbar-expand-lg bg-light">
+<nav th:fragment="nav(show)" class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/}">
             <img th:src="@{/img/logo.svg}" width="40">
@@ -23,8 +20,8 @@
                     <a class="nav-link" th:href="@{/pizzas}">Pizzas</a>
                 </li>
             </ul>
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <form th:if="${show}" class="d-flex" role="search" method="get" th:action="@{/pizzas}">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="input">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
