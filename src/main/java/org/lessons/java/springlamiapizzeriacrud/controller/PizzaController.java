@@ -1,6 +1,7 @@
 package org.lessons.java.springlamiapizzeriacrud.controller;
 
 import jakarta.validation.Valid;
+import org.lessons.java.springlamiapizzeriacrud.model.AlertMessages;
 import org.lessons.java.springlamiapizzeriacrud.model.Pizza;
 import org.lessons.java.springlamiapizzeriacrud.repository.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,11 +24,16 @@ public class PizzaController {
     private PizzaRepository repo;
 
     @GetMapping
-    public String index(Model model) {
+    public String index(Model model, @RequestParam(name = "input") Optional<String> keyword) {
 
-        List<Pizza> result = repo.findAll();
+        List<Pizza> result;
+
+        if (keyword.isEmpty()) {
+            result = repo.findAll();
+        } else {
+            result = repo.findByNameContainingIgnoreCase(keyword.get());
+        }
         model.addAttribute("list", result);
-
         return "/pizzas/index";
     }
 
@@ -49,7 +56,7 @@ public class PizzaController {
     }
 
     @PostMapping("/create")
-    public String store(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model) {
+    public String store(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             return "/pizzas/create";
@@ -61,6 +68,7 @@ public class PizzaController {
         persistPizza.setPrice(formPizza.getPrice());
 
         repo.save(persistPizza);
+        redirectAttributes.addFlashAttribute("message", new AlertMessages(AlertMessages.typeAlert.SUCCESS, "Created pizza"));
         return "redirect:/pizzas";
     }
 
@@ -78,7 +86,7 @@ public class PizzaController {
 
 
     @PostMapping("/edit/{id}")
-    public String update(@PathVariable Integer id, @Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model) {
+    public String update(@PathVariable Integer id, @Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             return "/pizzas/edit";
@@ -90,15 +98,21 @@ public class PizzaController {
         updatedPizza.setPrice(formPizza.getPrice());
 
         repo.save(updatedPizza);
-
-        return "redirect:/pizzas";
+        redirectAttributes.addFlashAttribute("message", new AlertMessages(AlertMessages.typeAlert.SUCCESS, "Edited pizza"));
+        return "redirect:/pizzas/" + id;
 
     }
 
 
-    @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Integer id) {
-        repo.deleteById(id);
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        Optional result = repo.findById(id);
+        if (result.isPresent()) {
+            repo.deleteById(id);
+            redirectAttributes.addFlashAttribute("message", new AlertMessages(AlertMessages.typeAlert.SUCCESS, "Delete success"));
+        } else {
+            redirectAttributes.addFlashAttribute("message", new AlertMessages(AlertMessages.typeAlert.ERROR, "Not found"));
+        }
         return "redirect:/pizzas";
     }
 
